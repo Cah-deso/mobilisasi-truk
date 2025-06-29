@@ -16,7 +16,7 @@ async function fetchCheckerData() {
 }
 
 function loginChecker() {
-  const nama = document.getElementById('checkerName').value;
+  const name = document.getElementById('checkerName').value;
   const password = document.getElementById('password').value;
   const checker = checkerData.find(c => c.Nama === name && c.Password === password);
 

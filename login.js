@@ -1,4 +1,4 @@
-<script>
+
 let checkerData = [];
 
 async function fetchCheckerData() {
@@ -6,7 +6,7 @@ async function fetchCheckerData() {
   const data = await response.json();
   checkerData = data;
 
-  const checkerSelect = document.getElementById('checkername');
+  const checkerSelect = document.getElementById('checkerName');
   data.forEach(item => {
     const option = document.createElement('option');
     option.value = item.Nama;
@@ -16,7 +16,7 @@ async function fetchCheckerData() {
 }
 
 function loginChecker() {
-  const name = document.getElementById('checkername').value;
+  const name = document.getElementById('checkerName').value;
   const password = document.getElementById('password').value;
   const checker = checkerData.find(c => c.Nama === name && c.Password === password);
 
@@ -29,4 +29,3 @@ function loginChecker() {
 }
 
 window.onload = fetchCheckerData;
-</script>

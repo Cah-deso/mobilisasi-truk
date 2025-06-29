@@ -27,7 +27,7 @@ async function submitForm() {
   const validasi = document.getElementById('validasi').value;
   const checker = localStorage.getItem('checkerName');
 
-  const isValid = truckData.some(truck => truck['No Plat']?.toLowerCase() === plat.toLowerCase());
+  const isValid = truckData.some(truck => truck['No. Plat']?.toLowerCase() === plat.toLowerCase());
   if (!isValid) {
     alert('Plat nomor tidak terdaftar!');
     return;

@@ -26,7 +26,7 @@ async function submitForm() {
   const validasi = document.getElementById('validasi').value;
   const checker = localStorage.getItem('checkerName');
 
-  const isValid = truckData.some(truck => truck['No Plat']?.toLowerCase().replace(/\s+/g, '') === plat.toLowerCase().replace(/\s+/g, ''));
+  const isValid = truckData.some(truck => truck['No. Plat']?.toLowerCase().replace(/\s+/g, '') === plat.toLowerCase().replace(/\s+/g, ''));
   if (!isValid) {
     alert('Plat nomor tidak terdaftar di sheet Truck!\nPastikan persis sama dengan data di spreadsheet.');
     return;

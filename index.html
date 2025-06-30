@@ -63,17 +63,22 @@
       const usernameSelect = document.getElementById('username');
       usernameSelect.innerHTML = '<option>Loading...</option>';
 
-      const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getUsers&role=${role};
-      const res = await fetch(url);
-      const data = await res.json();
+      const url = 'https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getUsers&role=${role}';
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-      usernameSelect.innerHTML = '';
-      data.forEach(name => {
-        const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
-        usernameSelect.appendChild(opt);
-      });
+        usernameSelect.innerHTML = '';
+        data.forEach(name => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          usernameSelect.appendChild(opt);
+        });
+      } catch (error) {
+        console.error('Gagal memuat username:', error);
+        usernameSelect.innerHTML = '<option>Error memuat data</option>';
+      }
     }
 
     async function login() {
@@ -81,16 +86,21 @@
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
-      const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=login&role=${role}&username=${username}&password=${password};
-      const res = await fetch(url);
-      const data = await res.json();
+      const url = 'https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=login&role=${role}&username=${username}&password=${password}';
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-      if (data.success) {
-        sessionStorage.setItem('username', username);
-        sessionStorage.setItem('role', role);
-        window.location.href = role === 'Admin' ? 'admin.html' : 'checker.html';
-      } else {
-        alert('Login gagal. Periksa kembali username atau password.');
+        if (data.success) {
+          sessionStorage.setItem('username', username);
+          sessionStorage.setItem('role', role);
+          window.location.href = role === 'Admin' ? 'admin.html' : 'checker.html';
+        } else {
+          alert('Login gagal. Periksa kembali username atau password.');
+        }
+      } catch (error) {
+        alert('Terjadi kesalahan saat login.');
+        console.error(error);
       }
     }
   </script>

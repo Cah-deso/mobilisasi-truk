@@ -63,7 +63,7 @@
       const usernameSelect = document.getElementById('username');
       usernameSelect.innerHTML = '<option>Loading...</option>';
 
-      const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getUsers&role=${role};
+      const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getUsers&role=${role}`;
       try {
         const res = await fetch(url);
         const data = await res.json();
@@ -86,7 +86,7 @@
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
-      const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=login&role=${role}&username=${username}&password=${password};
+      const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=login&role=${role}&username=${username}&password=${password}`;
       try {
         const res = await fetch(url);
         const data = await res.json();

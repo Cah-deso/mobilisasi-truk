@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel</title>
+  <style>
+    body {
+      background-color: #2f2f2f;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+    }
+    button {
+      padding: 15px;
+      margin: 10px 0;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      background-color: #5cb85c;
+      color: white;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #4cae4c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Selamat datang, Admin</h2>
+
+    <button onclick="openForm('checker')">Form Registrasi Checker</button>
+    <button onclick="openForm('truk')">Form Registrasi Truk</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const formLinks = {
+      checker: "https://docs.google.com/forms/d/e/FORM_ID_CHECKER/viewform?embedded=true",
+      truk: "https://docs.google.com/forms/d/e/FORM_ID_TRUK/viewform?embedded=true"
+    };
+
+    function openForm(type) {
+      const link = formLinks[type];
+      const win = window.open("", "formWindow", "width=600,height=800");
+      win.document.write(`
+        <html>
+        <head><title>Form ${type}</title></head>
+        <body style="margin:0;padding:0;">
+          <iframe src="${link}" width="100%" height="100%" frameborder="0" style="border:0"></iframe>
+        </body>
+        </html>
+      `);
+    }
+
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    // Cegah akses langsung
+    window.onload = () => {
+      const role = sessionStorage.getItem("role");
+      if (role !== "Admin") {
+        alert("Akses ditolak.");
+        window.location.href = "index.html";
+      }
+    };
+  </script>
+</body>
+</html>

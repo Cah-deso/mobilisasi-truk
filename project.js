@@ -13,6 +13,7 @@ async function initProjectForm() {
 
   const response = await fetch('https://opensheet.elk.sh/1fMErLbsU--Lo10rgiT230yfIg6feVa1EpkSZqbg186A/Truck');
   truckData = await response.json();
+  console.log("Data truk terambil:", truckData);
 }
 
 function logout() {
@@ -22,17 +23,33 @@ function logout() {
 
 async function submitForm() {
   const plat = document.getElementById('plat').value.trim();
-  const photo1 = document.getElementById('photo1').files[0];
-  const photo2 = document.getElementById('photo2').files[0];
   const validasi = document.getElementById('validasi').value;
   const checker = localStorage.getItem('checkerName');
 
-  const isValid = truckData.some(truck => truck['No. Plat']?.toLowerCase() === plat.toLowerCase());
+  const isValid = truckData.some(truck => truck['No Plat']?.toLowerCase().replace(/\s+/g, '') === plat.toLowerCase().replace(/\s+/g, ''));
   if (!isValid) {
-    alert('Plat nomor tidak terdaftar!');
+    alert('Plat nomor tidak terdaftar di sheet Truck!\nPastikan persis sama dengan data di spreadsheet.');
     return;
   }
 
-  console.log('Data Siap Dikirim:', { checker, plat, validasi });
-  window.location.href = 'konfirmasi.html';
+  const payload = { checker, plat, validasi };
+
+  try {
+    const res = await fetch('https://script.google.com/macros/s/AKfycby8o2lYoAZx5wW3piusxivE_Y-jCDkhI4F8tZ2pQr6r10QqrMFJKCSBstQsYNkFk58a/exec', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const text = await res.text();
+    console.log("Response dari Apps Script:", text);
+
+    if (text === "OK") {
+      window.location.href = 'konfirmasi.html';
+    } else {
+      alert("Gagal menyimpan data. Coba lagi nanti.");
+    }
+  } catch (err) {
+    console.error("Gagal kirim data:", err);
+    alert("Terjadi kesalahan saat mengirim data.");
+  }
 }

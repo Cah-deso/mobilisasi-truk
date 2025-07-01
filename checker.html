@@ -100,5 +100,15 @@
       loadDataChecker();
     }
   </script>
+
+  <script>
+  const username = sessionStorage.getItem("username");
+  const role = sessionStorage.getItem("role");
+
+  if (!username || role !== "Checker") {
+    alert("Akses ditolak. Halaman ini hanya untuk Checker.");
+    window.location.href = "index.html";
+  }
+</script>
 </body>
 </html>

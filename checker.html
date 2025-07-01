@@ -76,14 +76,17 @@
         const data = await res.json();
 
         if (data.success) {
-          document.getElementById("dataChecker").innerHTML = `
-            <strong>Plat Nomor:</strong> ${data.plat}<br>
-            <strong>Jenis:</strong> ${data.jenis}<br>
-            <strong>Kapasitas:</strong> ${data.kapasitas}<br>
-            <strong>Perusahaan:</strong> ${data.perusahaan}<br>
-            <strong>Validasi:</strong> ${data.validasi}<br>
-            <strong>Keterangan:</strong> ${data.keterangan}
-          `;
+  document.getElementById("dataChecker").innerHTML = `
+    <strong>Waktu:</strong> ${data.timestamp}<br>
+    <strong>Plat Nomor:</strong> ${data.plat}<br>
+    <strong>Jenis Truck:</strong> ${data.jenis}<br>
+    <strong>Kapasitas Bak:</strong> ${data.kapasitas}<br>
+    <strong>Perusahaan:</strong> ${data.perusahaan}<br>
+    <strong>Foto Samping:</strong> <a href="${data.photo1}" target="_blank">Lihat</a><br>
+    <strong>Foto Belakang:</strong> <a href="${data.photo2}" target="_blank">Lihat</a><br>
+    <strong>Validasi:</strong> ${data.validasi}<br>
+    <strong>Keterangan:</strong> ${data.keterangan || '-'}
+  `;
         } else {
           document.getElementById("dataChecker").textContent = "Belum ada data yang ditemukan.";
         }

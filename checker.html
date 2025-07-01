@@ -80,7 +80,7 @@
     // Fungsi untuk ambil data terakhir
     async function loadDataChecker() {
       try {
-        const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)};
+        const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)}`;
         const res = await fetch(url);
         const data = await res.json();
 

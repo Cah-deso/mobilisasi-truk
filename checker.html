@@ -40,6 +40,26 @@
     <button onclick="logout()">Logout</button>
   </div>
 
+<iframe id="formFrame" src="https://docs.google.com/forms/d/e/1oXIy2go88b2VIlYCtg1L4MD6il_Sf7GOCmedjGZAoyY/viewform?embedded=true" width="100%" height="800" frameborder="0" onload="checkSubmit()"></iframe>
+
+<script>
+  function checkSubmit() {
+    const iframe = document.getElementById("formFrame");
+    const checker = sessionStorage.getItem("username");
+    
+    // Awasi jika iframe sudah redirect ke halaman "Terima kasih"
+    if (iframe.contentDocument && iframe.contentDocument.body.innerText.includes("Terima kasih")) {
+      // Delay sedikit agar form benar-benar terkirim
+      setTimeout(() => {
+        window.location.href = "infochecker.html";
+      }, 1500);
+    }
+  }
+
+  // Tambahkan juga ini untuk memperbarui saat iframe reload
+  setInterval(checkSubmit, 2000);
+</script>
+  
   <script>
     function logout() {
       sessionStorage.clear();

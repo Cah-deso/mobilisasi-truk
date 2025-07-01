@@ -14,7 +14,7 @@
     }
     .btn {
       display: block;
-      margin: 20px auto;
+      margin: 15px auto;
       padding: 15px 30px;
       background-color: #4CAF50;
       border: none;
@@ -50,56 +50,62 @@
   </div>
 
   <script>
-    const namaUser = sessionStorage.getItem('username');
-    const role = sessionStorage.getItem('role');
+    const namaUser = sessionStorage.getItem("username");
+    const role = sessionStorage.getItem("role");
 
-    // Validasi role
-    if (!namaUser || role !== 'Checker') {
+    // Validasi role checker
+    if (!namaUser || role !== "Checker") {
       alert("Akses ditolak. Halaman ini hanya untuk Checker.");
       window.location.href = "index.html";
     }
 
-    // Tampilkan nama dan tanggal
+    // Tampilkan nama dan tanggal hari ini
     document.getElementById("namaUser").textContent = namaUser;
     const today = new Date();
     const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById("tanggalHariIni").textContent = today.toLocaleDateString('id-ID', opsiTanggal);
 
-    // Fungsi buka form (dengan upload file) di tab baru
-    function bukaForm() {
-      const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform"; // Ganti dengan link form-mu
-      window.open(formUrl, "_blank");
-    }
-
-    // Fungsi logout
+    // Fungsi Logout
     function logout() {
       sessionStorage.clear();
       window.location.href = "index.html";
     }
 
-    // Fungsi ambil data terakhir checker
+    // Fungsi buka form Google
+    function bukaForm() {
+      const url = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform";
+      window.open(url, "_blank");
+    }
+
+    // Fungsi ambil data terakhir dari Apps Script
     async function loadDataChecker() {
       try {
         const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)}`;
         const res = await fetch(url);
-        const data = await res.json();
+        const result = await res.json();
 
-        if (data.success) {
+        if (result.success) {
           document.getElementById("dataChecker").innerHTML = `
-            <strong>Terakhir mengisi:</strong> ${data.tanggal}<br>
-            <strong>Plat Nomor:</strong> ${data.plat}<br>
-            <strong>Perusahaan:</strong> ${data.perusahaan}
+            <strong>Tanggal Input:</strong> ${result.tanggal}<br>
+            <strong>Plat Nomor:</strong> ${result.plat}<br>
+            <strong>Jenis:</strong> ${result.jenis}<br>
+            <strong>Kapasitas:</strong> ${result.kapasitas}<br>
+            <strong>Perusahaan:</strong> ${result.perusahaan}<br>
+            <strong>Validasi:</strong> ${result.validasi}<br>
+            <strong>Keterangan:</strong> ${result.keterangan}
           `;
         } else {
-          document.getElementById("dataChecker").textContent = "Belum ada data yang ditemukan.";
+          document.getElementById("dataChecker").textContent = "Belum ada data ditemukan.";
         }
-      } catch (err) {
+      } catch (error) {
+        console.error(error);
         document.getElementById("dataChecker").textContent = "Gagal memuat data.";
-        console.error(err);
       }
     }
 
+    // Jalankan saat halaman dibuka
     loadDataChecker();
   </script>
+
 </body>
 </html>

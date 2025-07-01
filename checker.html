@@ -53,22 +53,22 @@
     const namaUser = sessionStorage.getItem('username');
     const role = sessionStorage.getItem('role');
 
-    // Validasi role checker
+    // Validasi role
     if (!namaUser || role !== 'Checker') {
-      alert("Akses tidak diizinkan.");
+      alert("Akses ditolak. Halaman ini hanya untuk Checker.");
       window.location.href = "index.html";
     }
 
-    // Tampilkan nama & tanggal
+    // Tampilkan nama dan tanggal
     document.getElementById("namaUser").textContent = namaUser;
     const today = new Date();
     const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById("tanggalHariIni").textContent = today.toLocaleDateString('id-ID', opsiTanggal);
 
-    // Fungsi buka form
+    // Fungsi buka form (dengan upload file) di tab baru
     function bukaForm() {
-      const url = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform"; // ganti dengan formmu
-      window.open(url, "_blank");
+      const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform"; // Ganti dengan link form-mu
+      window.open(formUrl, "_blank");
     }
 
     // Fungsi logout
@@ -77,7 +77,7 @@
       window.location.href = "index.html";
     }
 
-    // Fungsi ambil data checker
+    // Fungsi ambil data terakhir checker
     async function loadDataChecker() {
       try {
         const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)}`;
@@ -99,9 +99,7 @@
       }
     }
 
-    // Jalankan ambil data
     loadDataChecker();
   </script>
-
 </body>
 </html>

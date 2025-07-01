@@ -14,7 +14,7 @@
     }
     .btn {
       display: block;
-      margin: 15px auto;
+      margin: 20px auto;
       padding: 15px 30px;
       background-color: #4CAF50;
       border: none;
@@ -50,38 +50,29 @@
   </div>
 
   <script>
-    const namaUser = sessionStorage.getItem("username");
-    const role = sessionStorage.getItem("role");
-
-    // Validasi role Checker
-    if (!namaUser || role !== "Checker") {
-      alert("Akses ditolak. Halaman ini hanya untuk Checker.");
-      window.location.href = "index.html";
-    }
-
-    // Tampilkan nama & tanggal hari ini
+    const namaUser = sessionStorage.getItem('username');
+    const role = sessionStorage.getItem('role');
     document.getElementById("namaUser").textContent = namaUser;
+
     const today = new Date();
     const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById("tanggalHariIni").textContent = today.toLocaleDateString('id-ID', opsiTanggal);
 
-    // Fungsi untuk buka form
     function bukaForm() {
-      const url = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform"; // Ganti dengan URL form kamu
+      const url = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform";
       window.open(url, "_blank");
     }
 
-    // Fungsi untuk logout
     function logout() {
       sessionStorage.clear();
       window.location.href = "index.html";
     }
 
-    // Fungsi untuk ambil data terakhir
     async function loadDataChecker() {
+      const endpoint = 'https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getLastProject&username=${encodeURIComponent(namaUser)}';
+
       try {
-        const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)}`;
-        const res = await fetch(url);
+        const res = await fetch(endpoint);
         const data = await res.json();
 
         if (data.success) {
@@ -97,13 +88,18 @@
           document.getElementById("dataChecker").textContent = "Belum ada data yang ditemukan.";
         }
       } catch (err) {
-        console.error("Gagal ambil data:", err);
         document.getElementById("dataChecker").textContent = "Gagal memuat data.";
+        console.error("Gagal ambil data:", err);
       }
     }
 
-    // Panggil fungsi ambil data
-    loadDataChecker();
+    // Validasi hanya Checker yang bisa akses
+    if (!namaUser || role !== 'Checker') {
+      alert("Akses tidak diizinkan.");
+      window.location.href = "index.html";
+    } else {
+      loadDataChecker();
+    }
   </script>
 
 </body>

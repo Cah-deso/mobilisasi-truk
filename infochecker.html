@@ -64,7 +64,7 @@
   </div>
 
   <script>
-    const formProjectLink = "https://docs.google.com/forms/d/e/FORM_ID_PROJECT/viewform?embedded=true";
+    const formProjectLink = "https://docs.google.com/forms/d/e/1oXIy2go88b2VIlYCtg1L4MD6il_Sf7GOCmedjGZAoyY/viewform?embedded=true";
 
     async function loadData() {
       const name = sessionStorage.getItem("username");
@@ -74,7 +74,7 @@
         return;
       }
 
-      const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getLastProject&username=${name};
+      const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getLastProject&username=${name}`;
       const res = await fetch(url);
       const data = await res.json();
 

@@ -36,11 +36,26 @@
     <h2>Selamat Datang, <span id="namaChecker"></span></h2>
     <p id="tanggalSekarang"></p>
 
-    <button onclick="window.open(`projectform.html`, `_blank`)">Isi Form Project</button>
+    <button onclick="openProjectForm()">Isi Form Project</button>
+
+<script>
+function openProjectForm() {
+  const role = sessionStorage.getItem('role');
+  const username = sessionStorage.getItem('username');
+
+  if (role === 'Checker' && username) {
+    // Ganti link di bawah dengan LINK FORM Anda
+    window.open("https://docs.google.com/forms/d/e/1FAIpQLSfxxxxxx/viewform", "_blank");
+  } else {
+    alert("Akses hanya untuk user Checker.");
+    window.location.href = "index.html";
+  }
+}
+</script>
     <button onclick="logout()">Logout</button>
   </div>
 
-<iframe id="formFrame" src="https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform?embedded=true" width="100%" height="800" frameborder="0" onload="checkSubmit()"></iframe>
+<iframe id="formFrame" src="https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform" width="100%" height="800" frameborder="0" onload="checkSubmit()"></iframe>
 
 <script>
   function checkSubmit() {

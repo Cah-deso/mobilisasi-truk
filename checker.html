@@ -88,10 +88,10 @@
     <strong>Keterangan:</strong> ${data.keterangan || '-'}
   `;
         } else {
-          document.getElementById("dataChecker").textContent = "Belum ada data yang ditemukan.";
+          document.getElementById("dataChecker").innerHTML = "Belum ada data yang ditemukan.";
         }
       } catch (err) {
-        document.getElementById("dataChecker").textContent = "Gagal memuat data.";
+        document.getElementById("dataChecker").innerHTML = "Gagal memuat data.";
         console.error("Gagal ambil data:", err);
       }
     }

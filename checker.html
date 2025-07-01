@@ -53,57 +53,56 @@
     const namaUser = sessionStorage.getItem("username");
     const role = sessionStorage.getItem("role");
 
-    // Validasi role checker
+    // Validasi role Checker
     if (!namaUser || role !== "Checker") {
       alert("Akses ditolak. Halaman ini hanya untuk Checker.");
       window.location.href = "index.html";
     }
 
-    // Tampilkan nama dan tanggal hari ini
+    // Tampilkan nama & tanggal hari ini
     document.getElementById("namaUser").textContent = namaUser;
     const today = new Date();
     const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById("tanggalHariIni").textContent = today.toLocaleDateString('id-ID', opsiTanggal);
 
-    // Fungsi Logout
+    // Fungsi untuk buka form
+    function bukaForm() {
+      const url = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform"; // Ganti dengan URL form kamu
+      window.open(url, "_blank");
+    }
+
+    // Fungsi untuk logout
     function logout() {
       sessionStorage.clear();
       window.location.href = "index.html";
     }
 
-    // Fungsi buka form Google
-    function bukaForm() {
-      const url = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform";
-      window.open(url, "_blank");
-    }
-
-    // Fungsi ambil data terakhir dari Apps Script
+    // Fungsi untuk ambil data terakhir
     async function loadDataChecker() {
       try {
-        const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)}`;
+        const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)};
         const res = await fetch(url);
-        const result = await res.json();
+        const data = await res.json();
 
-        if (result.success) {
+        if (data.success) {
           document.getElementById("dataChecker").innerHTML = `
-            <strong>Tanggal Input:</strong> ${result.tanggal}<br>
-            <strong>Plat Nomor:</strong> ${result.plat}<br>
-            <strong>Jenis:</strong> ${result.jenis}<br>
-            <strong>Kapasitas:</strong> ${result.kapasitas}<br>
-            <strong>Perusahaan:</strong> ${result.perusahaan}<br>
-            <strong>Validasi:</strong> ${result.validasi}<br>
-            <strong>Keterangan:</strong> ${result.keterangan}
+            <strong>Plat Nomor:</strong> ${data.plat}<br>
+            <strong>Jenis:</strong> ${data.jenis}<br>
+            <strong>Kapasitas:</strong> ${data.kapasitas}<br>
+            <strong>Perusahaan:</strong> ${data.perusahaan}<br>
+            <strong>Validasi:</strong> ${data.validasi}<br>
+            <strong>Keterangan:</strong> ${data.keterangan}
           `;
         } else {
-          document.getElementById("dataChecker").textContent = "Belum ada data ditemukan.";
+          document.getElementById("dataChecker").textContent = "Belum ada data yang ditemukan.";
         }
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error("Gagal ambil data:", err);
         document.getElementById("dataChecker").textContent = "Gagal memuat data.";
       }
     }
 
-    // Jalankan saat halaman dibuka
+    // Panggil fungsi ambil data
     loadDataChecker();
   </script>
 

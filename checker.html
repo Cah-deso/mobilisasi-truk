@@ -34,6 +34,9 @@
       border-radius: 10px;
       margin-top: 20px;
     }
+    a {
+      color: #00d1ff;
+    }
   </style>
 </head>
 <body>
@@ -45,13 +48,19 @@
   <button class="btn" onclick="logout()">Logout</button>
 
   <div class="card" id="dataTerakhir">
-    <h3>Check Data Truk Masuk</h3>
+    <h3>Check Data Truk Terakhir</h3>
     <div id="dataChecker">Memuat data terakhir...</div>
   </div>
 
   <script>
     const namaUser = sessionStorage.getItem('username');
     const role = sessionStorage.getItem('role');
+
+    if (!namaUser || role !== 'Checker') {
+      alert("Akses ditolak. Halaman ini hanya untuk Checker.");
+      window.location.href = "index.html";
+    }
+
     document.getElementById("namaUser").textContent = namaUser;
 
     const today = new Date();
@@ -59,8 +68,8 @@
     document.getElementById("tanggalHariIni").textContent = today.toLocaleDateString('id-ID', opsiTanggal);
 
     function bukaForm() {
-      const url = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform";
-      window.open(url, "_blank");
+      const formURL = `https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform?entry.123456789=${encodeURIComponent(namaUser)}`;
+      window.open(formURL, "_blank");
     }
 
     function logout() {
@@ -69,41 +78,33 @@
     }
 
     async function loadDataChecker() {
-      const endpoint = 'https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getLastProject&username=${encodeURIComponent(namaUser)}';
-
       try {
-        const res = await fetch(endpoint);
+        const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getLastProject&username=${encodeURIComponent(namaUser)}`;
+        const res = await fetch(url);
         const data = await res.json();
 
         if (data.success) {
-  document.getElementById("dataChecker").innerHTML = `
-    <strong>Waktu:</strong> ${data.timestamp}<br>
-    <strong>Plat Nomor:</strong> ${data.plat}<br>
-    <strong>Jenis Truck:</strong> ${data.jenis}<br>
-    <strong>Kapasitas Bak:</strong> ${data.kapasitas}<br>
-    <strong>Perusahaan:</strong> ${data.perusahaan}<br>
-    <strong>Foto Samping:</strong> <a href="${data.photo1}" target="_blank">Lihat</a><br>
-    <strong>Foto Belakang:</strong> <a href="${data.photo2}" target="_blank">Lihat</a><br>
-    <strong>Validasi:</strong> ${data.validasi}<br>
-    <strong>Keterangan:</strong> ${data.keterangan || '-'}
-  `;
+          document.getElementById("dataChecker").innerHTML = `
+            <strong>Waktu:</strong> ${data.timestamp}<br>
+            <strong>Plat Nomor:</strong> ${data.plat}<br>
+            <strong>Jenis Truck:</strong> ${data.jenis}<br>
+            <strong>Kapasitas Bak:</strong> ${data.kapasitas}<br>
+            <strong>Perusahaan:</strong> ${data.perusahaan}<br>
+            <strong>Foto Samping:</strong> <a href="${data.photo1}" target="_blank">Lihat</a><br>
+            <strong>Foto Belakang:</strong> <a href="${data.photo2}" target="_blank">Lihat</a><br>
+            <strong>Validasi:</strong> ${data.validasi}<br>
+            <strong>Keterangan:</strong> ${data.keterangan || '-'}
+          `;
         } else {
-          document.getElementById("dataChecker").innerHTML = "Belum ada data yang ditemukan.";
+          document.getElementById("dataChecker").textContent = "Belum ada data yang ditemukan.";
         }
       } catch (err) {
-        document.getElementById("dataChecker").innerHTML = "Gagal memuat data.";
-        console.error("Gagal ambil data:", err);
+        console.error(err);
+        document.getElementById("dataChecker").textContent = "Gagal ambil data.";
       }
     }
 
-    // Validasi hanya Checker yang bisa akses
-    if (!namaUser || role !== 'Checker') {
-      alert("Akses tidak diizinkan.");
-      window.location.href = "index.html";
-    } else {
-      loadDataChecker();
-    }
+    loadDataChecker();
   </script>
-
 </body>
 </html>

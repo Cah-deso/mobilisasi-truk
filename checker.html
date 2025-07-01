@@ -1,73 +1,103 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard Checker</title>
+  <meta charset="UTF-8">
+  <title>Halaman Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background-color: #1e1e1e;
+      background-color: #2f2f2f;
       color: white;
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
     }
-
-    h2 {
-      margin-top: 10px;
-    }
-
-    button {
-      background-color: #28a745;
-      color: white;
+    .btn {
+      display: block;
+      margin: 20px auto;
+      padding: 15px 30px;
+      background-color: #4CAF50;
       border: none;
-      padding: 15px 25px;
-      margin: 10px;
-      font-size: 16px;
       border-radius: 8px;
+      color: white;
+      font-size: 16px;
       cursor: pointer;
+      width: 80%;
+      max-width: 300px;
     }
-
-    button:hover {
-      background-color: #218838;
+    .btn:hover {
+      background-color: #45a049;
+    }
+    .card {
+      background-color: #444;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h2>Selamat Datang, <span id="namaChecker">...</span></h2>
-  <p id="tanggal"></p>
 
-  <button onclick="bukaForm()">Isi Form Project</button>
-  <button onclick="logout()">Logout</button>
+  <h2>Selamat Datang, <span id="namaUser"></span></h2>
+  <p id="tanggalHariIni"></p>
+
+  <button class="btn" onclick="bukaForm()">Isi Form Project</button>
+  <button class="btn" onclick="logout()">Logout</button>
+
+  <div class="card" id="dataTerakhir">
+    <h3>Check Data Truk Masuk</h3>
+    <div id="dataChecker">Memuat data terakhir...</div>
+  </div>
 
   <script>
-    // Cek login & role
+    // Tampilkan nama & tanggal
+    const namaUser = sessionStorage.getItem('username');
     const role = sessionStorage.getItem('role');
-    const username = sessionStorage.getItem('username');
+    document.getElementById("namaUser").textContent = namaUser;
 
-    if (!role || !username || role !== 'Checker') {
-      alert("Akses ditolak. Silakan login sebagai Checker.");
-      window.location.href = "index.html";
-    } else {
-      document.getElementById('namaChecker').textContent = username;
-    }
-
-    // Tampilkan tanggal hari ini
     const today = new Date();
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('tanggal').textContent = today.toLocaleDateString('id-ID', options);
+    const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById("tanggalHariIni").textContent = today.toLocaleDateString('id-ID', opsiTanggal);
 
-    // Buka form project
+    // Buka Google Form di tab baru
     function bukaForm() {
-      // Ganti dengan URL form Anda
-      const linkForm = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform";
-      window.open(linkForm, "_blank");
+      window.open("https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform", "_blank"); // Ganti URL form
     }
 
     // Logout
     function logout() {
       sessionStorage.clear();
       window.location.href = "index.html";
+    }
+
+    // Ambil data terakhir checker dari Google Apps Script
+    async function loadDataChecker() {
+      try {
+        const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)};
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.success) {
+          document.getElementById("dataChecker").innerHTML = `
+            <strong>Terakhir mengisi:</strong> ${data.tanggal}<br>
+            <strong>Plat Nomor:</strong> ${data.plat}<br>
+            <strong>Perusahaan:</strong> ${data.perusahaan}
+          `;
+        } else {
+          document.getElementById("dataChecker").textContent = "Belum ada data yang ditemukan.";
+        }
+      } catch (err) {
+        document.getElementById("dataChecker").textContent = "Gagal memuat data.";
+        console.error(err);
+      }
+    }
+
+    // Cek session dan load data
+    if (!namaUser || role !== 'Checker') {
+      alert("Akses tidak diizinkan.");
+      window.location.href = "index.html";
+    } else {
+      loadDataChecker();
     }
   </script>
 </body>

@@ -1,76 +1,75 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel</title>
+  <meta charset="UTF-8">
+  <title>Halaman Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       background-color: #2f2f2f;
       color: white;
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 40px;
+      padding: 20px;
     }
-    .container {
-      max-width: 500px;
-      margin: auto;
-    }
-    button {
-      padding: 15px;
-      margin: 10px 0;
-      width: 100%;
-      border: none;
-      border-radius: 10px;
+    .btn {
+      display: block;
+      margin: 20px auto;
+      padding: 15px 30px;
       background-color: #5cb85c;
+      border: none;
+      border-radius: 8px;
       color: white;
       font-size: 16px;
+      cursor: pointer;
+      width: 80%;
+      max-width: 300px;
     }
-    button:hover {
+    .btn:hover {
       background-color: #4cae4c;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Selamat datang, Admin</h2>
 
-    <button onclick="openForm('checker')">Form Registrasi Checker</button>
-    <button onclick="openForm('truk')">Form Registrasi Truk</button>
-    <button onclick="logout()">Logout</button>
-  </div>
+  <h2>Selamat Datang, Admin</h2>
+  <p id="namaAdmin"></p>
+
+  <button class="btn" onclick="openForm('checker')">Registrasi Checker</button>
+  <button class="btn" onclick="openForm('truck')">Registrasi Truk</button>
+  <button class="btn" onclick="logout()">Logout</button>
 
   <script>
-    const formLinks = {
-      checker: "https://docs.google.com/forms/d/e/1FAIpQLSfLO6GCi0uKcNvSUszPG1WjjPt2C-5TRmuOxo-yrPzEcj0syA/viewform?embedded=true",
-      truk: "https://docs.google.com/forms/d/e/1FAIpQLSfWQu00StXdwk2GUOVGEQsWb6DFerSgMKMdpIVoOAXXAPC7aA/viewform?embedded=true"
-    };
+    const username = sessionStorage.getItem("username");
+    const role = sessionStorage.getItem("role");
 
-    function openForm(type) {
-      const link = formLinks[type];
-      const win = window.open("", "formWindow", "width=600,height=800");
-      win.document.write(`
-        <html>
-        <head><title>Form ${type}</title></head>
-        <body style="margin:0;padding:0;">
-          <iframe src="${link}" width="100%" height="100%" frameborder="0" style="border:0"></iframe>
-        </body>
-        </html>
-      `);
+    if (!username || role !== "Admin") {
+      alert("Akses ditolak. Halaman ini hanya untuk Admin.");
+      window.location.replace("index.html");
+    }
+
+    document.getElementById("namaAdmin").textContent = username;
+
+    function openForm(formType) {
+      let formUrl = "";
+      if (formType === "checker") {
+        formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfLO6GCi0uKcNvSUszPG1WjjPt2C-5TRmuOxo-yrPzEcj0syA/viewform";
+      } else if (formType === "truck") {
+        formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfWQu00StXdwk2GUOVGEQsWb6DFerSgMKMdpIVoOAXXAPC7aA/viewform";
+      }
+      window.open(formUrl, "_blank");
     }
 
     function logout() {
       sessionStorage.clear();
-      window.location.href = "index.html";
+      // Redirect tanpa bisa klik back
+      window.location.replace("index.html");
     }
 
-    // Cegah akses langsung
-    window.onload = () => {
-      const role = sessionStorage.getItem("role");
-      if (role !== "Admin") {
-        alert("Akses ditolak.");
-        window.location.href = "index.html";
-      }
+    // Cegah back ke halaman ini setelah logout
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function () {
+      window.location.replace("index.html");
     };
   </script>
 </body>

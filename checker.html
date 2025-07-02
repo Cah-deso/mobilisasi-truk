@@ -12,6 +12,7 @@
       text-align: center;
       padding: 20px;
     }
+
     .btn {
       display: block;
       margin: 20px auto;
@@ -25,17 +26,16 @@
       width: 80%;
       max-width: 300px;
     }
+
     .btn:hover {
       background-color: #45a049;
     }
+
     .card {
       background-color: #444;
       padding: 20px;
       border-radius: 10px;
       margin-top: 20px;
-    }
-    a {
-      color: #00d1ff;
     }
   </style>
 </head>
@@ -48,17 +48,17 @@
   <button class="btn" onclick="logout()">Logout</button>
 
   <div class="card" id="dataTerakhir">
-    <h3>Check Data Truk Terakhir</h3>
+    <h3>Check Data Truk Masuk</h3>
     <div id="dataChecker">Memuat data terakhir...</div>
   </div>
 
   <script>
-    const namaUser = sessionStorage.getItem('username');
-    const role = sessionStorage.getItem('role');
+    const namaUser = sessionStorage.getItem("username");
+    const role = sessionStorage.getItem("role");
 
-    if (!namaUser || role !== 'Checker') {
+    if (!namaUser || role !== "Checker") {
       alert("Akses ditolak. Halaman ini hanya untuk Checker.");
-      window.location.href = "index.html";
+      window.location.replace("index.html");
     }
 
     document.getElementById("namaUser").textContent = namaUser;
@@ -68,13 +68,15 @@
     document.getElementById("tanggalHariIni").textContent = today.toLocaleDateString('id-ID', opsiTanggal);
 
     function bukaForm() {
-      const formURL = `https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform?entry.123456789=${encodeURIComponent(namaUser)}`;
-      window.open(formURL, "_blank");
+      const entryID = "entry.123456789"; // Ganti dengan ID kolom Nama Checker
+      const formID = "1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw";  // Ganti dengan ID Form
+      const url = https://docs.google.com/forms/d/e/${formID}/viewform?${entryID}=${encodeURIComponent(namaUser)};
+      window.open(url, "_blank");
     }
 
     function logout() {
       sessionStorage.clear();
-      window.location.href = "index.html";
+      window.location.replace("index.html");
     }
 
     async function loadDataChecker() {
@@ -85,26 +87,29 @@
 
         if (data.success) {
           document.getElementById("dataChecker").innerHTML = `
-            <strong>Waktu:</strong> ${data.timestamp}<br>
             <strong>Plat Nomor:</strong> ${data.plat}<br>
-            <strong>Jenis Truck:</strong> ${data.jenis}<br>
-            <strong>Kapasitas Bak:</strong> ${data.kapasitas}<br>
+            <strong>Jenis:</strong> ${data.jenis}<br>
+            <strong>Kapasitas:</strong> ${data.kapasitas}<br>
             <strong>Perusahaan:</strong> ${data.perusahaan}<br>
-            <strong>Foto Samping:</strong> <a href="${data.photo1}" target="_blank">Lihat</a><br>
-            <strong>Foto Belakang:</strong> <a href="${data.photo2}" target="_blank">Lihat</a><br>
             <strong>Validasi:</strong> ${data.validasi}<br>
-            <strong>Keterangan:</strong> ${data.keterangan || '-'}
+            <strong>Keterangan:</strong> ${data.keterangan}<br>
           `;
         } else {
-          document.getElementById("dataChecker").textContent = "Belum ada data yang ditemukan.";
+          document.getElementById("dataChecker").textContent = "Belum ada data ditemukan.";
         }
       } catch (err) {
-        console.error(err);
-        document.getElementById("dataChecker").textContent = "Gagal ambil data.";
+        console.error("Gagal ambil data:", err);
+        document.getElementById("dataChecker").textContent = "Gagal memuat data.";
       }
     }
 
     loadDataChecker();
+
+    // Cegah tombol back setelah logout
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function () {
+      window.location.replace("index.html");
+    };
   </script>
 </body>
 </html>

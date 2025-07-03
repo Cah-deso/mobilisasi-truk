@@ -12,7 +12,6 @@
       text-align: center;
       padding: 20px;
     }
-
     .btn {
       display: block;
       margin: 20px auto;
@@ -26,11 +25,9 @@
       width: 80%;
       max-width: 300px;
     }
-
     .btn:hover {
       background-color: #45a049;
     }
-
     .card {
       background-color: #444;
       padding: 20px;
@@ -53,35 +50,39 @@
   </div>
 
   <script>
-    const namaUser = sessionStorage.getItem("username");
-    const role = sessionStorage.getItem("role");
+    // Cek session
+    const namaUser = sessionStorage.getItem('username');
+    const role = sessionStorage.getItem('role');
 
-    if (!namaUser || role !== "Checker") {
-      alert("Akses ditolak. Halaman ini hanya untuk Checker.");
-      window.location.replace("index.html");
+    if (!namaUser || role !== 'Checker') {
+      alert("Akses ditolak. Silakan login terlebih dahulu.");
+      window.location.href = "index.html";
     }
 
+    // Tampilkan nama dan tanggal
     document.getElementById("namaUser").textContent = namaUser;
-
     const today = new Date();
     const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById("tanggalHariIni").textContent = today.toLocaleDateString('id-ID', opsiTanggal);
 
+    // Fungsi buka form Google Form dengan pramuat nama checker
     function bukaForm() {
-      const entryID = "entry.115483735"; // Ganti dengan ID kolom Nama Checker
-      const formID = "1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw";  // Ganti dengan ID Form
-      const url = `https://docs.google.com/forms/d/e/${formID}/viewform?${entryID}=${encodeURIComponent(namaUser)}`;
+      const formID = "1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw";
+      const entryID = "entry.115483735"; // ID untuk Nama Checker Bertugas
+      const url = `https://docs.google.com/forms/d/e/${formID}/viewform?usp=pp_url&${entryID}=${encodeURIComponent(namaUser)}`;
       window.open(url, "_blank");
     }
 
+    // Fungsi logout dan hapus session
     function logout() {
       sessionStorage.clear();
-      window.location.replace("index.html");
+      window.location.href = "index.html";
     }
 
+    // Fungsi ambil data terakhir
     async function loadDataChecker() {
       try {
-        const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getLastProject&username=${encodeURIComponent(namaUser)}`;
+        const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)}`;
         const res = await fetch(url);
         const data = await res.json();
 
@@ -92,24 +93,29 @@
             <strong>Kapasitas:</strong> ${data.kapasitas}<br>
             <strong>Perusahaan:</strong> ${data.perusahaan}<br>
             <strong>Validasi:</strong> ${data.validasi}<br>
-            <strong>Keterangan:</strong> ${data.keterangan}<br>
+            <strong>Keterangan:</strong> ${data.keterangan}
           `;
         } else {
-          document.getElementById("dataChecker").textContent = "Belum ada data ditemukan.";
+          document.getElementById("dataChecker").textContent = "Belum ada data yang ditemukan.";
         }
-      } catch (err) {
-        console.error("Gagal ambil data:", err);
+      } catch (error) {
+        console.error("Gagal ambil data:", error);
         document.getElementById("dataChecker").textContent = "Gagal memuat data.";
       }
     }
 
-    loadDataChecker();
+    // Load saat halaman siap
+    window.onload = loadDataChecker;
 
-    // Cegah tombol back setelah logout
-    window.history.pushState(null, "", window.location.href);
-    window.onpopstate = function () {
-      window.location.replace("index.html");
-    };
+    // Cegah kembali ke halaman setelah logout
+    window.addEventListener("pageshow", function(event) {
+      if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+        if (!sessionStorage.getItem("username")) {
+          window.location.href = "index.html";
+        }
+      }
+    });
   </script>
+
 </body>
 </html>

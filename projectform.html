@@ -2,61 +2,60 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Form Project Checker</title>
+  <title>Form Project</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
+      margin: 0;
+      padding: 0;
       background-color: #2f2f2f;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     iframe {
       width: 100%;
-      height: 600px;
+      height: 100vh;
       border: none;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #5cb85c;
-      color: white;
-      border: none;
-      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-  <h2>Form Project Checker</h2>
 
-  <div id="formSection" style="display: none;">
-    <iframe id="formFrame" src=""></iframe>
-    <br>
-    <button onclick="window.location.href='checker.html'">Kembali ke Beranda</button>
-  </div>
-
-  <div id="notAllowed" style="display: none;">
-    <p>?? Anda tidak memiliki akses ke halaman ini.</p>
-    <button onclick="window.location.href='index.html'">Login Ulang</button>
-  </div>
+  <!-- Embed Form di Iframe -->
+  <iframe
+    id="formFrame"
+    src="https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform?embedded=true"
+    frameborder="0"
+    onload="setupObserver()">
+  </iframe>
 
   <script>
-    const role = sessionStorage.getItem('role');
-    const username = sessionStorage.getItem('username');
+    function setupObserver() {
+      const iframe = document.getElementById("formFrame");
 
-    if (role === 'Checker' && username) {
-      // Jika role dan session valid, tampilkan form
-      document.getElementById('formSection').style.display = 'block';
+      // Tunggu sampai iframe siap
+      iframe.onload = () => {
+        try {
+          const frameDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-      // Ganti link di bawah ini dengan link FORM Project milik Anda
-      const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSdD7xxxxxxx/viewform';
-      document.getElementById('formFrame').src = formUrl;
+          const observer = new MutationObserver(() => {
+            const text = frameDoc.body.innerText;
+            if (text.includes("Terima kasih telah mengisi formulir")) {
+              // Redirect ke checker.html
+              window.location.href = "checker.html";
+            }
+          });
 
-    } else {
-      // Jika tidak valid, tolak akses
-      document.getElementById('notAllowed').style.display = 'block';
+          observer.observe(frameDoc.body, { childList: true, subtree: true });
+        } catch (e) {
+          // Gagal akses konten iframe karena CORS
+          console.error("Tidak bisa membaca isi iframe: " + e.message);
+        }
+      };
     }
   </script>
+
 </body>
 </html>

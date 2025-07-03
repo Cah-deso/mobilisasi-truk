@@ -2,69 +2,93 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Form Project</title>
+  <title>Isi Form Project</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      margin: 0;
       background-color: #2f2f2f;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
     }
-    iframe {
+    #formContainer {
+      height: 90vh;
       width: 100%;
-      height: 100vh;
       border: none;
     }
-    .center {
-      text-align: center;
-      padding: 20px;
-      color: white;
-    }
-    .btn {
-      background-color: #4CAF50;
+    #btnKembali {
+      display: none;
+      margin: 20px auto;
       padding: 10px 20px;
-      color: white;
+      background-color: #4CAF50;
       border: none;
       border-radius: 8px;
+      color: white;
+      font-size: 16px;
       cursor: pointer;
+    }
+    #btnKembali:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
 <body>
 
-  <iframe
-    id="formFrame"
-    src="https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform?embedded=true"
-  ></iframe>
+  <h2>Form Pengisian Project</h2>
 
-  <div class="center" id="kembaliBtn" style="display: none;">
-    <p>Terima kasih telah mengisi form.</p>
-    <button class="btn" onclick="kembaliKeAplikasi()">Kembali ke Aplikasi</button>
-  </div>
+  <!-- Iframe form project -->
+  <iframe id="formContainer"></iframe>
+
+  <button id="btnKembali" onclick="kembaliKeChecker()">Kembali ke Aplikasi</button>
 
   <script>
-    const iframe = document.getElementById("formFrame");
+    // Ambil nama checker dari sessionStorage
+    const checker = sessionStorage.getItem("username");
 
-    // Coba deteksi jika halaman sudah sampai di "Terima kasih"
-    iframe.onload = () => {
-      const checkInterval = setInterval(() => {
-        try {
-          const content = iframe.contentDocument || iframe.contentWindow.document;
-          const text = content.body.innerText;
+    // Jika tidak ada session, redirect ke index
+    if (!checker) {
+      alert("Akses tidak sah. Harap login terlebih dahulu.");
+      window.location.href = "index.html";
+    }
 
-          if (text.includes("Terima kasih telah mengisi formulir")) {
-            iframe.style.display = "none";
-            document.getElementById("kembaliBtn").style.display = "block";
-            clearInterval(checkInterval);
-          }
-        } catch (e) {
-          // Tidak bisa akses konten karena CORS, abaikan
+    // Ganti dengan ID kolom Nama Checker dari form Google
+    const entryNamaChecker = "entry.115483735"; // ID ini harus sesuai form Anda
+
+    // Google Form asli (tanpa viewform), gunakan formResponse agar bisa isi otomatis
+    const formBase = "https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/formResponse";
+
+    // Buat URL lengkap isi otomatis dengan GET param
+    const fullFormURL = ${formBase}?${entryNamaChecker}=${encodeURIComponent(checker)};
+
+    // Tampilkan di iframe
+    const formFrame = document.getElementById("formContainer");
+    formFrame.src = fullFormURL;
+
+    // Cek isi iframe apakah sudah sampai halaman "Terima kasih"
+    formFrame.onload = function () {
+      try {
+        const doc = formFrame.contentDocument || formFrame.contentWindow.document;
+        const text = doc.body.innerText;
+
+        if (text.includes("Terima kasih telah mengisi formulir")) {
+          document.getElementById("btnKembali").style.display = "block";
         }
-      }, 1000);
+      } catch (err) {
+        // Google Form tidak mengizinkan akses cross-origin,
+        // jadi kita deteksi berdasarkan URL (fallback)
+        if (formFrame.src.includes("formResponse")) {
+          // Jika user refresh setelah submit, Google akan redirect ke /formResponse
+          // Bisa dianggap form selesai
+          document.getElementById("btnKembali").style.display = "block";
+        }
+      }
     };
 
-    function kembaliKeAplikasi() {
-      // Tutup tab form, dan user kembali ke tab checker.html
-      window.close();
+    // Fungsi kembali ke checker.html
+    function kembaliKeChecker() {
+      window.close(); // Menutup tab form
     }
   </script>
 

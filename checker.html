@@ -69,7 +69,7 @@
     function bukaForm() {
       const formID = "1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw";
       const entryID = "entry.115483735"; // ID untuk Nama Checker Bertugas
-      const url = https://docs.google.com/forms/d/e/${formID}/viewform?usp=pp_url&${entryID}=${encodeURIComponent(namaUser)};
+      const url = `https://docs.google.com/forms/d/e/${formID}/viewform?usp=pp_url&${entryID}=${encodeURIComponent(namaUser)}`;
       window.open(url, "_blank");
     }
 
@@ -82,7 +82,7 @@
     // Fungsi ambil data terakhir
     async function loadDataChecker() {
       try {
-        const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)};
+        const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)}`;
         const res = await fetch(url);
         const data = await res.json();
 

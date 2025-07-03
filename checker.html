@@ -50,13 +50,12 @@
   </div>
 
   <script>
-    // Ambil session login
+    // Cek session
     const namaUser = sessionStorage.getItem('username');
     const role = sessionStorage.getItem('role');
 
-    // Jika tidak login atau bukan checker, redirect ke index
     if (!namaUser || role !== 'Checker') {
-      alert("Akses ditolak. Harap login sebagai Checker.");
+      alert("Akses ditolak. Silakan login terlebih dahulu.");
       window.location.href = "index.html";
     }
 
@@ -66,45 +65,56 @@
     const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById("tanggalHariIni").textContent = today.toLocaleDateString('id-ID', opsiTanggal);
 
-    // Buka Google Form di tab baru
+    // Fungsi buka form Google Form dengan pramuat nama checker
     function bukaForm() {
-      const entryNama = "entry.115483735"; // Ganti sesuai kolom Nama Checker pada Google Form Anda
-      const formURL = https://docs.google.com/forms/d/e/1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw/viewform?usp=pp_url&${entryNama}=${encodeURIComponent(namaUser)};
-      window.open(formURL, "_blank");
+      const formID = "1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw";
+      const entryID = "entry.115483735"; // ID untuk Nama Checker Bertugas
+      const url = https://docs.google.com/forms/d/e/${formID}/viewform?usp=pp_url&${entryID}=${encodeURIComponent(namaUser)};
+      window.open(url, "_blank");
     }
 
-    // Logout dan bersihkan session
+    // Fungsi logout dan hapus session
     function logout() {
       sessionStorage.clear();
       window.location.href = "index.html";
     }
 
-    // Ambil data terakhir dari Apps Script
+    // Fungsi ambil data terakhir
     async function loadDataChecker() {
       try {
-        const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getLastProject&username=${encodeURIComponent(namaUser)};
+        const url = https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)};
         const res = await fetch(url);
         const data = await res.json();
 
         if (data.success) {
           document.getElementById("dataChecker").innerHTML = `
             <strong>Plat Nomor:</strong> ${data.plat}<br>
-            <strong>Jenis Truk:</strong> ${data.jenis}<br>
+            <strong>Jenis:</strong> ${data.jenis}<br>
             <strong>Kapasitas:</strong> ${data.kapasitas}<br>
             <strong>Perusahaan:</strong> ${data.perusahaan}<br>
             <strong>Validasi:</strong> ${data.validasi}<br>
             <strong>Keterangan:</strong> ${data.keterangan}
           `;
         } else {
-          document.getElementById("dataChecker").textContent = "Belum ada data pengisian terbaru.";
+          document.getElementById("dataChecker").textContent = "Belum ada data yang ditemukan.";
         }
-      } catch (err) {
-        console.error("Gagal ambil data:", err);
+      } catch (error) {
+        console.error("Gagal ambil data:", error);
         document.getElementById("dataChecker").textContent = "Gagal memuat data.";
       }
     }
 
-    loadDataChecker();
+    // Load saat halaman siap
+    window.onload = loadDataChecker;
+
+    // Cegah kembali ke halaman setelah logout
+    window.addEventListener("pageshow", function(event) {
+      if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+        if (!sessionStorage.getItem("username")) {
+          window.location.href = "index.html";
+        }
+      }
+    });
   </script>
 
 </body>

@@ -50,7 +50,6 @@
   </div>
 
   <script>
-    // Cek session
     const namaUser = sessionStorage.getItem('username');
     const role = sessionStorage.getItem('role');
 
@@ -59,30 +58,26 @@
       window.location.href = "index.html";
     }
 
-    // Tampilkan nama dan tanggal
     document.getElementById("namaUser").textContent = namaUser;
     const today = new Date();
     const opsiTanggal = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById("tanggalHariIni").textContent = today.toLocaleDateString('id-ID', opsiTanggal);
 
-    // Fungsi buka form Google Form dengan pramuat nama checker
     function bukaForm() {
       const formID = "1FAIpQLSfOzXfaAT7tFYOOJ3L0ajgWCTm-nFsZ_TTI7DS7cKMp_ZRPEw";
-      const entryID = "entry.115483735"; // ID untuk Nama Checker Bertugas
+      const entryID = "entry.115483735"; // ID kolom "Nama Checker Bertugas"
       const url = `https://docs.google.com/forms/d/e/${formID}/viewform?usp=pp_url&${entryID}=${encodeURIComponent(namaUser)}`;
       window.open(url, "_blank");
     }
 
-    // Fungsi logout dan hapus session
     function logout() {
       sessionStorage.clear();
       window.location.href = "index.html";
     }
 
-    // Fungsi ambil data terakhir
     async function loadDataChecker() {
       try {
-        const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=lastData&username=${encodeURIComponent(namaUser)}`;
+        const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getLastProject&username=${encodeURIComponent(namaUser)}`;
         const res = await fetch(url);
         const data = await res.json();
 
@@ -104,10 +99,9 @@
       }
     }
 
-    // Load saat halaman siap
     window.onload = loadDataChecker;
 
-    // Cegah kembali ke halaman setelah logout
+    // Cegah akses ulang halaman setelah logout
     window.addEventListener("pageshow", function(event) {
       if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
         if (!sessionStorage.getItem("username")) {

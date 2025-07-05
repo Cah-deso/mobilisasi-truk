@@ -73,7 +73,7 @@ async function loadData() {
   selectedDate = document.getElementById("tanggal").value;
   if (!selectedDate) return alert("Pilih tanggal terlebih dahulu!");
 
-  const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=allData&tanggal=${selectedDate}`;
+  const url = `https://script.google.com/macros/s/AKfycbzXK4HbdNLK_EFMOuI03Cx9387ll_0adoKqE5NwWLEDMlLLZ94-x_q9-gBl_XoC-J2I/exec?action=allData&tanggal=${selectedDate}`;
   const res = await fetch(url);
   const json = await res.json();
 
@@ -140,7 +140,7 @@ async function submitValidasi() {
     };
   });
 
-  const kirim = await fetch(`https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec`, {
+  const kirim = await fetch(`https://script.google.com/macros/s/AKfycbzXK4HbdNLK_EFMOuI03Cx9387ll_0adoKqE5NwWLEDMlLLZ94-x_q9-gBl_XoC-J2I/exec`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ action: "simpanValidasi", data: hasil })

@@ -1,76 +1,71 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Halaman Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      background-color: #2f2f2f;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    .btn {
-      display: block;
-      margin: 20px auto;
-      padding: 15px 30px;
-      background-color: #5cb85c;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      width: 80%;
-      max-width: 300px;
-    }
-    .btn:hover {
-      background-color: #4cae4c;
-    }
-  </style>
-</head>
-<body>
+<!DOCTYPE html>  
+<html lang="id">  
+<head>  
+  <meta charset="UTF-8">  
+  <title>Halaman Admin</title>  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <style>  
+    body {  
+      background-color: #2f2f2f;  
+      color: white;  
+      font-family: Arial, sans-serif;  
+      text-align: center;  
+      padding: 20px;  
+    }  
+    .btn {  
+      display: block;  
+      margin: 20px auto;  
+      padding: 15px 30px;  
+      background-color: #5cb85c;  
+      border: none;  
+      border-radius: 8px;  
+      color: white;  
+      font-size: 16px;  
+      cursor: pointer;  
+      width: 80%;  
+      max-width: 300px;  
+    }  
+    .btn:hover {  
+      background-color: #4cae4c;  
+    }  
+  </style>  
+</head>  
+<body>    <h2>Selamat Datang, Admin</h2>  
+  <p id="namaAdmin"></p>  <button class="btn" onclick="openForm('checker')">Registrasi Checker</button>
+<button class="btn" onclick="openForm('truck')">Registrasi Truk</button>
+<button class="btn" onclick="logout()">Logout</button>
 
-  <h2>Selamat Datang, Admin</h2>
-  <p id="namaAdmin"></p>
-
-  <button class="btn" onclick="openForm('checker')">Registrasi Checker</button>
-  <button class="btn" onclick="openForm('truck')">Registrasi Truk</button>
-  <button class="btn" onclick="window.location.href='admincheck.html'">Check Data Proyek</button>
-  <button class="btn" onclick="logout()">Logout</button>
-
-  <script>
-    const username = sessionStorage.getItem("username");
-    const role = sessionStorage.getItem("role");
-
-    if (!username || role !== "Admin") {
-      alert("Akses ditolak. Halaman ini hanya untuk Admin.");
-      window.location.replace("index.html");
-    }
-
-    document.getElementById("namaAdmin").textContent = username;
-
-    function openForm(formType) {
-      let formUrl = "";
-      if (formType === "checker") {
-        formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfLO6GCi0uKcNvSUszPG1WjjPt2C-5TRmuOxo-yrPzEcj0syA/viewform";
-      } else if (formType === "truck") {
-        formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfWQu00StXdwk2GUOVGEQsWb6DFerSgMKMdpIVoOAXXAPC7aA/viewform";
-      }
-      window.open(formUrl, "_blank");
-    }
-
-    function logout() {
-      sessionStorage.clear();
-      window.location.replace("index.html");
-    }
-
-    // Cegah kembali setelah logout
-    window.history.pushState(null, "", window.location.href);
-    window.onpopstate = function () {
-      window.location.replace("index.html");
-    };
-  </script>
-</body>
+  <script>  
+    const username = sessionStorage.getItem("username");  
+    const role = sessionStorage.getItem("role");  
+  
+    if (!username || role !== "Admin") {  
+      alert("Akses ditolak. Halaman ini hanya untuk Admin.");  
+      window.location.replace("index.html");  
+    }  
+  
+    document.getElementById("namaAdmin").textContent = username;  
+  
+    function openForm(formType) {  
+      let formUrl = "";  
+      if (formType === "checker") {  
+        formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfLO6GCi0uKcNvSUszPG1WjjPt2C-5TRmuOxo-yrPzEcj0syA/viewform";  
+      } else if (formType === "truck") {  
+        formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfWQu00StXdwk2GUOVGEQsWb6DFerSgMKMdpIVoOAXXAPC7aA/viewform";  
+      }  
+      window.open(formUrl, "_blank");  
+    }  
+  
+    function logout() {  
+      sessionStorage.clear();  
+      // Redirect tanpa bisa klik back  
+      window.location.replace("index.html");  
+    }  
+  
+    // Cegah back ke halaman ini setelah logout  
+    window.history.pushState(null, "", window.location.href);  
+    window.onpopstate = function () {  
+      window.location.replace("index.html");  
+    };  
+  </script>  </body>  
 </html>

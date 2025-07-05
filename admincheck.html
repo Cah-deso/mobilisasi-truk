@@ -1,158 +1,186 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
+  <title>Validasi Data Proyek</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Cek Data Proyek</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
+      background: #f1f1f1;
       padding: 20px;
     }
+
     h2 {
       text-align: center;
+      color: #333;
     }
-    .filter {
+
+    .controls {
       margin-bottom: 20px;
       text-align: center;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: #fff;
+
+    input[type="date"] {
+      padding: 8px;
+      font-size: 16px;
     }
-    table, th, td {
-      border: 1px solid #ddd;
-    }
-    th, td {
-      padding: 10px;
-      text-align: center;
-    }
-    th {
-      background-color: #4CAF50;
-      color: white;
-    }
-    img.preview {
-      max-width: 80px;
-      cursor: pointer;
-    }
-    .btn {
-      padding: 10px 20px;
-      background-color: #4CAF50;
+
+    button {
+      padding: 8px 16px;
+      background: #2e7d32;
       color: white;
       border: none;
       border-radius: 5px;
+      margin: 0 5px;
       cursor: pointer;
-      margin-top: 20px;
     }
-    .btn:hover {
-      background-color: #45a049;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th {
+      background: #4caf50;
+      color: white;
+    }
+
+    td img {
+      max-height: 80px;
+      cursor: pointer;
     }
   </style>
 </head>
-<body><h2>Validasi Data Proyek oleh Admin</h2>
-<div class="filter">
-  <label for="tanggal">Pilih Tanggal:</label>
-  <input type="date" id="tanggal">
-  <button class="btn" onclick="loadData()">Tampilkan Data</button>
-</div><div id="tabelContainer"></div>
-<div style="text-align: center">
-  <button class="btn" onclick="submitValidasi()">Simpan & Kembali</button>
-</div><script>
-let dataRows = [];
-let selectedDate = "";
+<body>
+  <h2>Validasi Data Proyek oleh Admin</h2>
 
-function formatTanggal(dateStr) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("id-ID", {
-    year: "numeric", month: "2-digit", day: "2-digit"
-  });
-}
+  <div class="controls">
+    <input type="date" id="tanggalInput">
+    <button onclick="loadData()">Tampilkan Data</button>
+    <button onclick="simpanData()">Simpan & Kembali</button>
+  </div>
 
-async function loadData() {
-  selectedDate = document.getElementById("tanggal").value;
-  if (!selectedDate) return alert("Pilih tanggal terlebih dahulu!");
-
-  const url = `https://script.google.com/macros/s/AKfycbzXK4HbdNLK_EFMOuI03Cx9387ll_0adoKqE5NwWLEDMlLLZ94-x_q9-gBl_XoC-J2I/exec?action=allData&tanggal=${selectedDate}`;
-  const res = await fetch(url);
-  const json = await res.json();
-
-  if (!json.success || !json.data.length) {
-    document.getElementById("tabelContainer").innerHTML = "<p style='text-align:center'>Tidak ada data pada tanggal tersebut</p>";
-    return;
-  }
-
-  dataRows = json.data;
-  renderTable();
-}
-
-function renderTable() {
-  let html = `<table>
+  <table id="dataTabel">
     <thead>
       <tr>
+        <th>No</th>
+        <th>Waktu</th>
         <th>Checker</th>
         <th>Plat</th>
         <th>Jenis</th>
         <th>Kapasitas</th>
-        <th>Jam Masuk</th>
         <th>Perusahaan</th>
-        <th>Photo 1</th>
-        <th>Photo 2</th>
+        <th>Foto 1</th>
+        <th>Foto 2</th>
         <th>Validasi Checker</th>
         <th>Keterangan</th>
         <th>Validasi Admin</th>
       </tr>
     </thead>
-    <tbody>`;
+    <tbody></tbody>
+  </table>
 
-  dataRows.forEach((row, i) => {
-    html += `<tr>
-      <td>${row.nama}</td>
-      <td>${row.plat}</td>
-      <td>${row.jenis}</td>
-      <td>${row.kapasitas}</td>
-      <td>${row.jam}</td>
-      <td>${row.perusahaan}</td>
-      <td><a href="${row.foto1}" target="_blank"><img src="${row.foto1}" class="preview"></a></td>
-      <td><a href="${row.foto2}" target="_blank"><img src="${row.foto2}" class="preview"></a></td>
-      <td>${row.validasi}</td>
-      <td>${row.keterangan}</td>
-      <td>
-        <select id="validasi-${i}">
-          <option value="">- Pilih -</option>
-          <option value="OK">OK</option>
-          <option value="Tidak">Tidak</option>
-        </select>
-      </td>
-    </tr>`;
-  });
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzXK4HbdNLK_EFMOuI03Cx9387ll_0adoKqE5NwWLEDMlLLZ94-x_q9-gBl_XoC-J2I/exec";
 
-  html += `</tbody></table>`;
-  document.getElementById("tabelContainer").innerHTML = html;
-}
+    async function loadData() {
+      const tanggal = document.getElementById("tanggalInput").value;
+      if (!tanggal) {
+        alert("Pilih tanggal terlebih dahulu.");
+        return;
+      }
 
-async function submitValidasi() {
-  const hasil = dataRows.map((row, i) => {
-    const validasiAdmin = document.getElementById(`validasi-${i}`).value;
-    return {
-      timestamp: row.timestamp,
-      validasi: validasiAdmin
-    };
-  });
+      try {
+        const res = await fetch(`${scriptURL}?action=allData&tanggal=${tanggal}`);
+        const result = await res.json();
+        if (result.success) {
+          const tbody = document.querySelector("#dataTabel tbody");
+          tbody.innerHTML = "";
 
-  const kirim = await fetch(`https://script.google.com/macros/s/AKfycbzXK4HbdNLK_EFMOuI03Cx9387ll_0adoKqE5NwWLEDMlLLZ94-x_q9-gBl_XoC-J2I/exec`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ action: "simpanValidasi", data: hasil })
-  });
+          result.data.forEach((item, i) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${i + 1}</td>
+              <td>${new Date(item.waktu).toLocaleString()}</td>
+              <td>${item.checker}</td>
+              <td>${item.plat}</td>
+              <td>${item.jenis}</td>
+              <td>${item.kapasitas}</td>
+              <td>${item.perusahaan}</td>
+              <td><img src="${item.foto1}" onclick="window.open('${item.foto1}', '_blank')"></td>
+              <td><img src="${item.foto2}" onclick="window.open('${item.foto2}', '_blank')"></td>
+              <td>${item.validasiChecker || '-'}</td>
+              <td>${item.keterangan || '-'}</td>
+              <td>
+                <select data-row="${item.row}">
+                  <option value="">Pilih</option>
+                  <option value="OK" ${item.validasiAdmin === 'OK' ? 'selected' : ''}>OK</option>
+                  <option value="Tidak" ${item.validasiAdmin === 'Tidak' ? 'selected' : ''}>Tidak</option>
+                </select>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        } else {
+          alert("Gagal ambil data: " + result.message);
+        }
+      } catch (error) {
+        alert("Gagal fetch data: " + error);
+        console.error(error);
+      }
+    }
 
-  const res = await kirim.json();
-  if (res.success) {
-    alert("Data berhasil disimpan!");
-    window.location.href = "admin.html";
-  } else {
-    alert("Gagal menyimpan data.");
-  }
-}
-</script></body>
+    async function simpanData() {
+      const selects = document.querySelectorAll("select[data-row]");
+      const updates = [];
+
+      selects.forEach(select => {
+        const row = select.getAttribute("data-row");
+        const value = select.value;
+        if (value) {
+          updates.push({ row: row, validasiAdmin: value });
+        }
+      });
+
+      if (updates.length === 0) {
+        alert("Tidak ada data yang dipilih untuk disimpan.");
+        return;
+      }
+
+      try {
+        const res = await fetch(scriptURL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "simpanValidasi",
+            updates: updates
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          alert("Data berhasil disimpan.");
+          window.location.href = "admin.html";
+        } else {
+          alert("Gagal menyimpan: " + result.message);
+        }
+      } catch (error) {
+        alert("Gagal simpan: " + error);
+        console.error(error);
+      }
+    }
+  </script>
+</body>
 </html>

@@ -37,6 +37,7 @@
 
   <button class="btn" onclick="openForm('checker')">Registrasi Checker</button>
   <button class="btn" onclick="openForm('truck')">Registrasi Truk</button>
+  <button class="btn" onclick="window.location.href='admincheck.html'">Check Data Proyek</button>
   <button class="btn" onclick="logout()">Logout</button>
 
   <script>
@@ -62,11 +63,10 @@
 
     function logout() {
       sessionStorage.clear();
-      // Redirect tanpa bisa klik back
       window.location.replace("index.html");
     }
 
-    // Cegah back ke halaman ini setelah logout
+    // Cegah kembali setelah logout
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = function () {
       window.location.replace("index.html");

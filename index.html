@@ -1,1 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Mobilisasi</title>
+  <style>
+body {
+      background-color: #2f2f2f; 
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #444;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background-color: #5cb85c;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #4cae4c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <label for="role">Login sebagai:</label>
+    <select id="role" onchange="loadUsernames()">
+      <option value="">Pilih Role</option>
+      <option value="Admin">Admin</option>
+      <option value="Checker">Checker</option>
+    </select>
 
+    <label for="username">Username:</label>
+    <select id="username"></select>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password">
+
+    <button onclick="login()">Login</button>
+  </div>
+
+  <script>
+    async function loadUsernames() {
+      const role = document.getElementById('role').value;
+      const usernameSelect = document.getElementById('username');
+      usernameSelect.innerHTML = '<option>Loading...</option>';
+
+      const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=getUsers&role=${role}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        usernameSelect.innerHTML = '';
+        data.forEach(name => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          usernameSelect.appendChild(opt);
+        });
+      } catch (error) {
+        console.error('Gagal memuat username:', error);
+        usernameSelect.innerHTML = '<option>Error memuat data</option>';
+      }
+    }
+
+    async function login() {
+      const role = document.getElementById('role').value;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const url = `https://script.google.com/macros/s/AKfycbyd1bxvPrwqZVeANqJ95he47RfuAck420LTQ0YOsBiJDvISLnXU-emPX9HbxLhGOPou/exec?action=login&role=${role}&username=${username}&password=${password}`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.success) {
+          sessionStorage.setItem('username', username);
+          sessionStorage.setItem('role', role);
+          window.location.href = role === 'Admin' ? 'admin.html' : 'checker.html';
+        } else {
+          alert('Login gagal. Periksa kembali username atau password.');
+        }
+      } catch (error) {
+        alert('Terjadi kesalahan saat login.');
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
